@@ -14,8 +14,16 @@ class Auth:
 
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """
+        Class Auth manages API authentication
         """
-        return False
+        if path is None:
+            return True
+        if not excluded_paths:
+            return True
+        for excluded_path in excluded_paths:
+            if path.startswith(excluded_path.rstrip('/')):
+                return False
+        return True
 
     def authorization_header(self, request=None) -> str:
         """
