@@ -58,11 +58,16 @@ class DB:
             NoResultFound: If no user is found matching the filter criteria
             InvalidRequestError: If wrong query arguments are passed
         """
-        try:
-            user = self._session.query(User).filter_by(**kwargs).first()
-            if not user:
-                raise NoResultFound
-            return user
-        except (NoResultFound, InvalidRequestError) as e:
-            self._session.rollback()
-            raise e
+        fields, values = [], []
+        for key, value in kwargs.items():
+            if hasattr(User, key):
+                fields.append(getattr(User, key))
+                values.append(value)
+            else:
+                raise InvalidRequestError()
+        result = self._session.query(User).filter(
+            tuple_(*fields).in_([tuple(values)])
+        ).first()
+        if result is None:
+            raise NoResultFound()
+        return result
