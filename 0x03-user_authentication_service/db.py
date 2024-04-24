@@ -67,3 +67,28 @@ class DB:
         except (NoResultFound, InvalidRequestError) as e:
             self._session.rollback()
             raise e
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """Update a user's attributes in the database
+
+        Args:
+            user_id: ID of the user to update
+            **kwargs: Arbitrary keyword arguments for updating user attributes
+
+        Raises:
+            ValueError: If an invalid argument is passed
+        """
+        try:
+            user = self.find_user_by(id=user_id)
+            if not user:
+                raise NoResultFound
+            for attr, value in kwargs.items():
+                if hasattr(User, attr):
+                    setattr(user, attr, value)
+                else:
+                    raise ValueError(f"Invalid attribute '{attr}'")
+
+            self._session.commit()
+        except (NoResultFound, InvalidRequestError, ValueError) as e:
+            self._session.rollback()
+            raise e
