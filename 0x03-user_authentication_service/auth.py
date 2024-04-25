@@ -109,6 +109,17 @@ class Auth:
             return None
         return user
 
+    def destroy_session(self, user_id: int) -> None:
+        """Destroy the session for the user with the provided user ID
+        Args:
+            user_id (int): The ID of the user
+        Returns:
+            None
+        """
+        if not user_id:
+            return None
+        self._db.update_user(user_id=user_id, session_id=None)
+
 
 def _generate_uuid() -> str:
     """
