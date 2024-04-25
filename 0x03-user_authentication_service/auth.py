@@ -73,9 +73,10 @@ class Auth:
         except NoResultFound:
             return False
 
-    def _generate_uuid() -> str:
-        """
-        generates a new UUID
-        Return:string representation of a new UUID
-        """
-        return str(uuid.uuid4())
+
+def _generate_uuid() -> str:
+    """
+    generates a new UUID
+    Return:string representation of a new UUID
+    """
+    return str(uuid.uuid4())
